@@ -1,17 +1,25 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Colors extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NumbersFragment extends Fragment {
+
     MediaPlayer mediaPlayer;
     private AudioManager mAudioManager;
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -45,33 +53,41 @@ public class Colors extends AppCompatActivity {
         }
     };
 
+    public NumbersFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.words_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.words_list, container, false);
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        final ArrayList<Words> colorsArrayList = new ArrayList<Words>();
+        final ArrayList<Words> numbersArrayList = new ArrayList<Words>();
 
 
-        colorsArrayList.add(new Words("minto wuksus", "red", R.drawable.color_red, R.raw.color_red));
-        colorsArrayList.add(new Words("tinnә oyaase'nә", "green", R.drawable.color_green, R.raw.color_green));
-        colorsArrayList.add(new Words("oyaaset...", "brown", R.drawable.color_brown, R.raw.color_brown));
-        colorsArrayList.add(new Words("michәksәs?", "gray", R.drawable.color_gray, R.raw.color_gray));
-        colorsArrayList.add(new Words("kuchi achit", "black", R.drawable.color_black, R.raw.color_black));
-        colorsArrayList.add(new Words("әәnәs'aa?", "white", R.drawable.color_white, R.raw.color_white));
-        colorsArrayList.add(new Words("hәә’ әәnәm", "dusty yellow", R.drawable.color_dusty_yellow, R.raw.color_dusty_yellow));
-        colorsArrayList.add(new Words("әәnәm", "mustard yellow", R.drawable.color_mustard_yellow, R.raw.color_mustard_yellow));
+        numbersArrayList.add(new Words("lutti", "One", R.drawable.number_one, R.raw.number_one));
+        numbersArrayList.add(new Words("otiiko", "Two", R.drawable.number_two, R.raw.number_two));
+        numbersArrayList.add(new Words("tolookosu", "Three", R.drawable.number_three, R.raw.number_three));
+        numbersArrayList.add(new Words("oyyisa", "Four", R.drawable.number_four, R.raw.number_four));
+        numbersArrayList.add(new Words("massokka", "Five", R.drawable.number_five, R.raw.number_five));
+        numbersArrayList.add(new Words("temmokka", "Six", R.drawable.number_six, R.raw.number_six));
+        numbersArrayList.add(new Words("kenekaku", "Seven", R.drawable.number_seven, R.raw.number_seven));
+        numbersArrayList.add(new Words("kawinta", "Eight", R.drawable.number_eight, R.raw.number_eight));
+        numbersArrayList.add(new Words("wo'e", "Nine", R.drawable.number_nine, R.raw.number_nine));
+        numbersArrayList.add(new Words("na'aacha", "Ten", R.drawable.number_ten, R.raw.number_ten));
 
-        WordAdapter adapter = new WordAdapter(this, colorsArrayList, R.color.primary_color);
-        ListView list = (ListView) findViewById(R.id.list);
+
+        WordAdapter adapter = new WordAdapter(getActivity(), numbersArrayList, R.color.category_numbers);
+        ListView list = (ListView) rootView.findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 releaseMediaPlayer();
-                Words word = colorsArrayList.get(i);
+                Words word = numbersArrayList.get(i);
                 // Request audio focus so in order to play the audio file. The app needs to play a
                 // short audio file, so we will request audio focus with a short amount of time
                 // with AUDIOFOCUS_GAIN_TRANSIENT.
@@ -83,7 +99,7 @@ public class Colors extends AppCompatActivity {
 
                     // Create and setup the {@link MediaPlayer} for the audio resource associated
                     // with the current word
-                    mediaPlayer = MediaPlayer.create(Colors.this, word.getmAudioResorceId());
+                    mediaPlayer = MediaPlayer.create(getActivity(), word.getmAudioResorceId());
 
                     // Start the audio file
                     mediaPlayer.start();
@@ -92,14 +108,11 @@ public class Colors extends AppCompatActivity {
                     // media player once the sound has finished playing.
                     mediaPlayer.setOnCompletionListener(onCompletionListener);
                 }
+
             }
         });
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        releaseMediaPlayer();
+        return rootView;
     }
 
     /**
@@ -121,7 +134,15 @@ public class Colors extends AppCompatActivity {
             // unregisters the AudioFocusChangeListener so we don't get anymore callbacks.
             mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
+
+
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseMediaPlayer();
+    }
 }
+
+

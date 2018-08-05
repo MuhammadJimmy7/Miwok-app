@@ -1,17 +1,25 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class FamilyMembers extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ColorsFragment extends Fragment {
+
     MediaPlayer mediaPlayer;
     private AudioManager mAudioManager;
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -45,35 +53,38 @@ public class FamilyMembers extends AppCompatActivity {
         }
     };
 
+    public ColorsFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.words_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.words_list, container, false);
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        final ArrayList<Words> familyArrayList = new ArrayList<Words>();
+        final ArrayList<Words> colorsArrayList = new ArrayList<Words>();
 
 
-        familyArrayList.add(new Words("әpә", "Father", R.drawable.family_father, R.raw.family_father));
-        familyArrayList.add(new Words("әṭa", "Mother", R.drawable.family_mother, R.raw.family_mother));
-        familyArrayList.add(new Words("angsi", "Son", R.drawable.family_son, R.raw.family_son));
-        familyArrayList.add(new Words("tune", "Daughter", R.drawable.family_daughter, R.raw.family_daughter));
-        familyArrayList.add(new Words("taachi", "Older brother", R.drawable.family_older_brother, R.raw.family_older_brother));
-        familyArrayList.add(new Words("chalitti", "Younger brother", R.drawable.family_younger_brother, R.raw.family_younger_brother));
-        familyArrayList.add(new Words("teṭe", "Older sister", R.drawable.family_older_sister, R.raw.family_older_sister));
-        familyArrayList.add(new Words("kolliti", "Younger sister", R.drawable.family_younger_sister, R.raw.family_younger_sister));
-        familyArrayList.add(new Words("ama", "Grandmother", R.drawable.family_grandmother, R.raw.family_grandmother));
-        familyArrayList.add(new Words("paapa", "Grandfather", R.drawable.family_grandfather, R.raw.family_grandfather));
+        colorsArrayList.add(new Words("minto wuksus", "red", R.drawable.color_red, R.raw.color_red));
+        colorsArrayList.add(new Words("tinnә oyaase'nә", "green", R.drawable.color_green, R.raw.color_green));
+        colorsArrayList.add(new Words("oyaaset...", "brown", R.drawable.color_brown, R.raw.color_brown));
+        colorsArrayList.add(new Words("michәksәs?", "gray", R.drawable.color_gray, R.raw.color_gray));
+        colorsArrayList.add(new Words("kuchi achit", "black", R.drawable.color_black, R.raw.color_black));
+        colorsArrayList.add(new Words("әәnәs'aa?", "white", R.drawable.color_white, R.raw.color_white));
+        colorsArrayList.add(new Words("hәә’ әәnәm", "dusty yellow", R.drawable.color_dusty_yellow, R.raw.color_dusty_yellow));
+        colorsArrayList.add(new Words("әәnәm", "mustard yellow", R.drawable.color_mustard_yellow, R.raw.color_mustard_yellow));
 
-        WordAdapter adapter = new WordAdapter(this, familyArrayList, R.color.category_family);
-        ListView list = (ListView) findViewById(R.id.list);
+        WordAdapter adapter = new WordAdapter(getActivity(), colorsArrayList, R.color.primary_color);
+        ListView list = (ListView) rootView.findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 releaseMediaPlayer();
-                Words word = familyArrayList.get(i);
+                Words word = colorsArrayList.get(i);
                 // Request audio focus so in order to play the audio file. The app needs to play a
                 // short audio file, so we will request audio focus with a short amount of time
                 // with AUDIOFOCUS_GAIN_TRANSIENT.
@@ -85,7 +96,7 @@ public class FamilyMembers extends AppCompatActivity {
 
                     // Create and setup the {@link MediaPlayer} for the audio resource associated
                     // with the current word
-                    mediaPlayer = MediaPlayer.create(FamilyMembers.this, word.getmAudioResorceId());
+                    mediaPlayer = MediaPlayer.create(getActivity(), word.getmAudioResorceId());
 
                     // Start the audio file
                     mediaPlayer.start();
@@ -96,10 +107,11 @@ public class FamilyMembers extends AppCompatActivity {
                 }
             }
         });
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         releaseMediaPlayer();
     }
@@ -124,5 +136,4 @@ public class FamilyMembers extends AppCompatActivity {
             mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
     }
-
 }

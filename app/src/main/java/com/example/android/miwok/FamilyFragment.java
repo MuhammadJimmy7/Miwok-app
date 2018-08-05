@@ -1,17 +1,25 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Numbers extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class FamilyFragment extends Fragment {
+
     MediaPlayer mediaPlayer;
     private AudioManager mAudioManager;
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -45,36 +53,41 @@ public class Numbers extends AppCompatActivity {
         }
     };
 
+
+    public FamilyFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.words_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.words_list, container, false);
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        final ArrayList<Words> numbersArrayList = new ArrayList<Words>();
-
-
-        numbersArrayList.add(new Words("lutti", "One", R.drawable.number_one, R.raw.number_one));
-        numbersArrayList.add(new Words("otiiko", "Two", R.drawable.number_two, R.raw.number_two));
-        numbersArrayList.add(new Words("tolookosu", "Three", R.drawable.number_three, R.raw.number_three));
-        numbersArrayList.add(new Words("oyyisa", "Four", R.drawable.number_four, R.raw.number_four));
-        numbersArrayList.add(new Words("massokka", "Five", R.drawable.number_five, R.raw.number_five));
-        numbersArrayList.add(new Words("temmokka", "Six", R.drawable.number_six, R.raw.number_six));
-        numbersArrayList.add(new Words("kenekaku", "Seven", R.drawable.number_seven, R.raw.number_seven));
-        numbersArrayList.add(new Words("kawinta", "Eight", R.drawable.number_eight, R.raw.number_eight));
-        numbersArrayList.add(new Words("wo'e", "Nine", R.drawable.number_nine, R.raw.number_nine));
-        numbersArrayList.add(new Words("na'aacha", "Ten", R.drawable.number_ten, R.raw.number_ten));
+        final ArrayList<Words> familyArrayList = new ArrayList<Words>();
 
 
-        WordAdapter adapter = new WordAdapter(this, numbersArrayList, R.color.category_numbers);
-        ListView list = (ListView) findViewById(R.id.list);
+        familyArrayList.add(new Words("әpә", "Father", R.drawable.family_father, R.raw.family_father));
+        familyArrayList.add(new Words("әṭa", "Mother", R.drawable.family_mother, R.raw.family_mother));
+        familyArrayList.add(new Words("angsi", "Son", R.drawable.family_son, R.raw.family_son));
+        familyArrayList.add(new Words("tune", "Daughter", R.drawable.family_daughter, R.raw.family_daughter));
+        familyArrayList.add(new Words("taachi", "Older brother", R.drawable.family_older_brother, R.raw.family_older_brother));
+        familyArrayList.add(new Words("chalitti", "Younger brother", R.drawable.family_younger_brother, R.raw.family_younger_brother));
+        familyArrayList.add(new Words("teṭe", "Older sister", R.drawable.family_older_sister, R.raw.family_older_sister));
+        familyArrayList.add(new Words("kolliti", "Younger sister", R.drawable.family_younger_sister, R.raw.family_younger_sister));
+        familyArrayList.add(new Words("ama", "Grandmother", R.drawable.family_grandmother, R.raw.family_grandmother));
+        familyArrayList.add(new Words("paapa", "Grandfather", R.drawable.family_grandfather, R.raw.family_grandfather));
+
+        WordAdapter adapter = new WordAdapter(getActivity(), familyArrayList, R.color.category_family);
+        ListView list = (ListView) rootView.findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 releaseMediaPlayer();
-                Words word = numbersArrayList.get(i);
+                Words word = familyArrayList.get(i);
                 // Request audio focus so in order to play the audio file. The app needs to play a
                 // short audio file, so we will request audio focus with a short amount of time
                 // with AUDIOFOCUS_GAIN_TRANSIENT.
@@ -86,7 +99,7 @@ public class Numbers extends AppCompatActivity {
 
                     // Create and setup the {@link MediaPlayer} for the audio resource associated
                     // with the current word
-                    mediaPlayer = MediaPlayer.create(Numbers.this, word.getmAudioResorceId());
+                    mediaPlayer = MediaPlayer.create(getActivity(), word.getmAudioResorceId());
 
                     // Start the audio file
                     mediaPlayer.start();
@@ -95,15 +108,9 @@ public class Numbers extends AppCompatActivity {
                     // media player once the sound has finished playing.
                     mediaPlayer.setOnCompletionListener(onCompletionListener);
                 }
-
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        releaseMediaPlayer();
+        return rootView;
     }
 
     /**
@@ -127,5 +134,9 @@ public class Numbers extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseMediaPlayer();
+    }
 }

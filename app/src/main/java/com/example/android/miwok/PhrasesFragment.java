@@ -1,17 +1,24 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Phrases extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PhrasesFragment extends Fragment {
     MediaPlayer mediaPlayer;
     private AudioManager mAudioManager;
     private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -45,12 +52,17 @@ public class Phrases extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.words_list);
 
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+    public PhrasesFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.words_list, container, false);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         final ArrayList<Words> phrasesArrayList = new ArrayList<Words>();
 
@@ -66,8 +78,8 @@ public class Phrases extends AppCompatActivity {
         phrasesArrayList.add(new Words("yoowutis", "Let’s go.", R.raw.phrase_lets_go));
         phrasesArrayList.add(new Words("әnni'nem", "Come here.", R.raw.phrase_come_here));
 
-        WordAdapter adapter = new WordAdapter(this, phrasesArrayList, R.color.category_phrases);
-        ListView list = (ListView) findViewById(R.id.list);
+        WordAdapter adapter = new WordAdapter(getActivity(), phrasesArrayList, R.color.category_phrases);
+        ListView list = (ListView) rootView.findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,7 +97,7 @@ public class Phrases extends AppCompatActivity {
 
                     // Create and setup the {@link MediaPlayer} for the audio resource associated
                     // with the current word
-                    mediaPlayer = MediaPlayer.create(Phrases.this, word.getmAudioResorceId());
+                    mediaPlayer = MediaPlayer.create(getActivity(), word.getmAudioResorceId());
 
                     // Start the audio file
                     mediaPlayer.start();
@@ -96,12 +108,7 @@ public class Phrases extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        releaseMediaPlayer();
+        return rootView;
     }
 
     /**
@@ -125,4 +132,9 @@ public class Phrases extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        releaseMediaPlayer();
+    }
 }
